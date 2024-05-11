@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import DefaultLayout from './layout/defaultLayout';
+import Dashboard from './component/Dashboard';
+import { ToastContainer } from 'react-toastify';
+import AddEditForm from './component/addEditForm';
 
 function App() {
+  const state = true;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+    <Routes>
+         <Route path='/dashboard' element={<DefaultLayout/>}>
+             <Route index element={<Dashboard/>}/>
+             <Route path='addtodo' element={<AddEditForm/>}/>
+         </Route>
+         <Route path='/' element={ state ? <Navigate to='/dashboard'/>:null} />
+    </Routes>
+    <ToastContainer autoClose={5000} limit={1} />
+   </Router>
   );
 }
 
