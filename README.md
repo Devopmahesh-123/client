@@ -1,13 +1,7 @@
-# Getting Started with Create React App
+### first run command `npm install` to install the packages.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
+### Run this command to run the project `npm start`
+### The project support node js 18v above the 18v version.
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
