@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import '../css/userList.css';
 
-const UserList = ({ users, onEdit, ondelete }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const UserList = ({ users, onEdit, ondelete, totalCount,handlepag,pagecount}) => {
+  console.log("count",totalCount,"m",pagecount)
+  const [currentPage, setCurrentPage] = useState(pagecount);
   const [itemsPerPage] = useState(10);
 
+  console.log(">>>>>>>user",users);
   // Calculate indexes for pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
-
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
+//  console.log("currentItems",currentItems)
   // Change page
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+     handlepag(pageNumber)
+    setCurrentPage(pageNumber)
+  };
 
     return (
       <div>
@@ -26,7 +31,7 @@ const UserList = ({ users, onEdit, ondelete }) => {
           </tr>
         </thead>
         <tbody>
-          {currentItems.map(user => (
+          {users.map(user => (
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.description}</td>
@@ -44,10 +49,11 @@ const UserList = ({ users, onEdit, ondelete }) => {
       </table> 
        {/* Pagination */}
        <ul className="pagination">
-        {Array.from({ length: Math.ceil(users.length / itemsPerPage) }).map((_, index) => (
+        {Array.from({ length: Math.ceil(totalCount / itemsPerPage) }).map((_, index) => (
           <li key={index} className={currentPage === index + 1 ? 'active' : ''}>
-            <button onClick={() => paginate(index + 1)} style={{marginRight:'3px',backgroundColor:'dimgrey'}}>{index + 1}</button>
-          </li>
+          <button onClick={() => paginate(index + 1)} style={{marginRight:'5px', backgroundColor: currentPage === index + 1 ? '#007bff' : '#fff', color: currentPage === index + 1 ? '#fff' : 'black', border: '1px solid black'}}>
+        {index + 1}
+      </button></li>
         ))}
       </ul>
       </div>

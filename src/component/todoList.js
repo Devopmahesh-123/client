@@ -18,7 +18,21 @@ const TodoList = () => {
     const [editingId,setEditingId] = useState();
     const [deletingId,setDeletingId] = useState();
     const [handleDeleted,setHandleDelete] = useState(false);
+    const [totalCount,setTotalCount] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('select status');
+    const [pageNumber,setPageNumber] = useState(1);
+
     const dispatch = useDispatch();
+    console.log("selectedOption1",selectedOption);
+    useEffect(()=>{
+      console.log("selectedOption",selectedOption);
+      if(selectedOption === 'select status'){
+      dispatch(get_todo_list({filterKey:'',limit:10,page:pageNumber,sort:'createdAt'},(result)=>{
+        setUsers(result?.data?.docs);
+        setTotalCount(result?.data.count)
+      }))
+    } 
+    },[selectedOption,editingUser,addingUser,handleDeleted,pageNumber]);
 
     const handleDelete = (user) =>{
         setDeletingId(user?._id)
@@ -30,6 +44,13 @@ const TodoList = () => {
         setEditingUser(user);
         setEditingId(user?._id)
       };
+
+      const _handlepage = (pageNumber) => {
+        setPageNumber(pageNumber);
+        if(selectedOption !== 'select status'){
+          handlePageSelectChange(pageNumber)
+        }
+      };  
     
       const toggle = ()=>{
         setModal(false)
@@ -76,15 +97,16 @@ const TodoList = () => {
         setEditingUser(false);
         setAddingUser(false)
       }
-      const [selectedOption, setSelectedOption] = useState('select status');
 
       const handleSelectChange = (event) => {
         let filter = event.target.value;
         setSelectedOption(event.target.value);
-        dispatch(get_todo_list({filterkey:filter,limit:10,page:1,sort:'createdAt'},(response)=>{
+        dispatch(get_todo_list({filterkey:filter,limit:10,page:pageNumber,sort:'createdAt'},(response)=>{
          if(response.status === 'Success'){
           toast.success(response.message);
-          setUsers(response?.data)
+          setUsers(response?.data?.docs);
+          setTotalCount(response?.data?.count)
+          // setClear(true);
           // setAddingUser(false);
           // setEditingUser(false)
          }
@@ -96,14 +118,21 @@ const TodoList = () => {
         setHandleDelete(false)
       }
       const clearfun = ()=>{
-        setSelectedOption('select status')
+        setSelectedOption('select status');
+        setPageNumber(1)
+        // setClear(true);
       }
-      useEffect(()=>{
-        dispatch(get_todo_list({filterKey:'',limit:10,page:1,sort:'createdAt'},(result)=>{
-          setUsers(result.data);
-        }))
-      },[editingUser,addingUser,handleDeleted,selectedOption])
- 
+      const handlePageSelectChange = (page) =>{
+        dispatch(get_todo_list({filterkey:selectedOption,limit:10,page:page,sort:'createdAt'},(response)=>{
+          if(response.status === 'Success'){
+          //  toast.success(response.message);
+           setUsers(response?.data?.docs);
+           // setClear(true);
+           // setAddingUser(false);
+           // setEditingUser(false)
+          }
+         }))
+      }
   return (
     <div className="todo-list-container">
     <h1>User Management</h1>
@@ -130,7 +159,7 @@ const TodoList = () => {
     {editingUser || addingUser ? (
       <AddEditForm user={editingUser} add={addingUser} onSubmit={handleSubmit} onCancel={() => cancelFun(null)} />
     ) : (
-      <UserList users={users} onEdit={handleEdit} ondelete={handleDelete}/>
+      <UserList users={users} onEdit={handleEdit} ondelete={handleDelete} totalCount={totalCount} handlepag={_handlepage} pagecount={pageNumber}/>
     )}
      {/* Model Component to handle delete check */}
       <Modal
