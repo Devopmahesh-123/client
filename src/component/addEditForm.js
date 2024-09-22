@@ -7,14 +7,14 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
     const [name, setName] = useState(user ? user.name : '');
     const [description, setDescription] = useState(user ? user.description : '');
     const [dateTime, setDateTime] = useState(user ? user.dateTime : '');
-    // const [status, setStatus] = useState(user ? user.status : '');
+    const [status, setStatus] = useState(user ? user.status : '');
     const [suberror,setError] = useState({})
     let errors = {};
     const [touched, setTouched] = useState({
       name: false,
       description: false,
       dateTime: false,
-      // status: false,
+      status: false,
     });
 
     const handleInputChange = (field, value) => {
@@ -28,9 +28,9 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
         case 'dateTime':
           setDateTime(value);
           break;
-        // case 'status':
-        //   setStatus(value);
-        //   break;
+        case 'status':
+          setStatus(value);
+          break;
         default:
           break;
       }
@@ -49,7 +49,7 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
         name: false,
         description: false,
         dateTime: false,
-        // status: false,
+        status: false,
       });
       setError(errors)
       const hasErrors = Object.values(errors).some((error) => error);
@@ -63,8 +63,8 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
       errors = {
         name: !name ? 'name is required' : '',
         description: !description ? 'description is required' : '',
-        dateTime: !dateTime ? 'date and time is required' : ''
-        // status: status === 'select status' ? 'status is required' : '',
+        dateTime: !dateTime ? 'date and time is required' : '',
+        status: status === 'select status' ? 'status is required' : '',
       };
   
       return errors;
@@ -115,10 +115,10 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
               <div className="error-message">date and time is required</div>
             )}
             {suberror && <div className="error-message"><span>{suberror.dateTime}</span></div>}
-     {/* <label>
+          { !add && <label>
             Status<span className="required">*</span>
             <select
-              value={status}
+              value={status ? 'done' : 'upcoming'}
               onChange={(e) => handleInputChange('status', e.target.value)}
               onBlur={() => handleInputBlur('status')}
             >
@@ -129,7 +129,7 @@ const AddEditForm = ({ user, onSubmit, onCancel, add}) => {
             {touched.status && status === 'select status' && (
               <div className="error-message">Status is required</div>
             )}
-          </label> */}
+          </label>}
       <div className="button-container">
         <button type="submit">{add ? 'Add' : 'Update'}</button>
         <button type="button" onClick={onCancel}>Back</button>
