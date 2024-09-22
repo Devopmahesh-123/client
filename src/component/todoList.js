@@ -61,16 +61,34 @@ const TodoList = () => {
       };
     
       const handleSubmit = (userData) => {
+        let formdatas;
         if (editingUser) {
+          if(userData?.status === 'upcoming'){
+            formdatas = {
+            ...userData,
+            status:false
+            }
+         }else {
+          formdatas = {
+            ...userData,
+            status:true
+            }
+         }
           // Update existing user
-          dispatch(update_todo_list(editingId,userData,(response)=>{
+          dispatch(update_todo_list(editingId,formdatas,(response)=>{
             toast.success(response.message);
             setAddingUser(false);
             setEditingUser(false)
           }))
         } else {
+          if(userData?.status === ''){
+            formdatas = {
+            ...userData,
+            status:false
+            }
+         }
           // Add new user
-          dispatch(add_todo_List(userData,(response)=>{
+          dispatch(add_todo_List(formdatas,(response)=>{
             if(response.status === 'Success'){
               toast.success(response.message);
               setAddingUser(false);
@@ -103,7 +121,7 @@ const TodoList = () => {
         setSelectedOption(event.target.value);
         dispatch(get_todo_list({filterkey:filter,limit:10,page:pageNumber,sort:'createdAt'},(response)=>{
          if(response.status === 'Success'){
-          toast.success(response.message);
+          // toast.success(response.message);
           setUsers(response?.data?.docs);
           setTotalCount(response?.data?.count)
           // setClear(true);
@@ -139,7 +157,7 @@ const TodoList = () => {
     <div className="button-container">
         { !editingUser ? <button onClick={handleAdd} className="add-button">
           Add User
-        </button> : <button className="add-button">Edit</button>}
+        </button> : <span className="add-buttontm">Edit Todo List</span>}
         <div>
         { (!editingUser && !addingUser) && (
           <>
